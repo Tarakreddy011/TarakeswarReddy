@@ -44,7 +44,8 @@
     }
 
     html {
-      scroll-behavior: smooth
+      scroll-behavior: smooth;
+      overflow-x: hidden;
     }
 
     body {
@@ -122,10 +123,34 @@
       color: var(--orange);
     }
 
+    .mobile-menu-btn {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      cursor: none;
+      z-index: 1001;
+      padding: 5px;
+    }
+
+    .mobile-menu-btn span {
+      width: 24px;
+      height: 2px;
+      background: var(--orange);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      justify-content: space-between;
+    }
+
     .nav-links {
       display: flex;
       gap: 28px;
       list-style: none;
+      margin: 0 auto;
     }
 
     .nav-links a {
@@ -596,7 +621,9 @@
 
     .edu-timeline {
       position: relative;
-      padding-left: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding-left: 30px;
     }
 
     .edu-timeline::before {
@@ -612,12 +639,13 @@
     .edu-item {
       position: relative;
       margin-bottom: 60px;
+      width: 100%;
     }
 
     .edu-item::before {
       content: '';
       position: absolute;
-      left: -44px;
+      left: -37px;
       top: 6px;
       width: 10px;
       height: 10px;
@@ -625,10 +653,44 @@
       background: var(--orange);
       border: 2px solid var(--bg2);
       box-shadow: 0 0 12px var(--orange);
+      z-index: 10;
     }
 
     .edu-item:last-child {
       margin-bottom: 0;
+    }
+
+    @media (min-width: 901px) {
+      .edu-timeline {
+        padding-left: 0;
+      }
+      .edu-timeline::before {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .edu-item {
+        width: 50%;
+      }
+      .edu-item:nth-child(odd) {
+        left: 0;
+        padding-right: 50px;
+        text-align: right;
+      }
+      .edu-item:nth-child(odd)::before {
+        left: auto;
+        right: -7px;
+      }
+      .edu-item:nth-child(odd) .edu-desc {
+        margin-left: auto;
+      }
+      .edu-item:nth-child(even) {
+        left: 50%;
+        padding-left: 50px;
+        text-align: left;
+      }
+      .edu-item:nth-child(even)::before {
+        left: -7px;
+      }
     }
 
     .edu-period {
@@ -1429,8 +1491,54 @@
         padding: 16px 24px;
       }
 
+      .mobile-menu-btn {
+        display: flex;
+      }
+
+      .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: var(--bg);
+        border-left: 1px solid var(--border);
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px;
+        gap: 40px;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+      }
+
+      .nav-menu.open {
+        right: 0;
+      }
+
       .nav-links {
-        gap: 18px;
+        flex-direction: column;
+        gap: 24px;
+        margin: 0;
+      }
+
+      .nav-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 16px !important;
+      }
+
+      .mobile-menu-btn.open span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+
+      .mobile-menu-btn.open span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .mobile-menu-btn.open span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
       }
 
       footer {
@@ -1452,40 +1560,49 @@
   </style>
 </head>
 
-<body data-theme="dark">
+<body data-theme="light">
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
   <div class="grid-bg"></div>
 
   <nav>
     <div class="nav-logo">TR.</div>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#education">Education</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#ngo">NGO</a></li>
-      <li><a href="#certifications">Certs</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div style="display: flex; align-items: center; gap: 12px;">
-    <a href="Tarakreddycv.pdf" target="_blank" class="btn-primary" style="padding: 8px 16px; font-size: 10px;">Resume / CV</a>
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">Light Mode</button>
-  </div>
-</nav>
+    <div class="mobile-menu-btn" onclick="toggleMobileMenu()" id="menuBtn">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="nav-menu" id="navMenu">
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#ngo">NGO</a></li>
+        <li><a href="#certifications">Certs</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions" style="display: flex; align-items: center; gap: 12px;">
+        <a href="Tarakreddycv.pdf" target="_blank" class="btn-primary"
+          style="padding: 8px 16px; font-size: 10px;">Resume
+          / CV</a>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">Dark Mode</button>
+      </div>
+    </div>
+  </nav>
 
   <!-- HERO -->
   <section id="hero">
     <div class="hero-left">
-      <div class="hero-tag">// CSE Student &amp; Developer at LPU</div>
+      <div class="hero-tag">CSE Student &amp; Developer at LPU</div>
       <h1 class="hero-name">SINGAM REDDY<br><span>TARAKESWAR REDDY</span></h1>
       <p class="hero-role">Currently pursuing a B.Tech in Computer Science and Engineering at Lovely Professional
         University, Punjab. I enjoy building Android apps, websites, and practicing data structures and algorithms.</p>
       <div class="hero-btns">
         <a href="#projects" class="btn-primary">View Projects</a>
-      <a href="Tarakreddycv.pdf" target="_blank" class="btn-primary" style="background: var(--white); color: var(--bg); box-shadow: 0 0 20px rgba(255,255,255,0.2);">Download CV</a>
-      <a href="https://github.com/Tarakreddy011" target="_blank" class="btn-outline">GitHub</a>
-      <a href="#contact" class="btn-cv">Contact Me</a>
+        <a href="Tarakreddycv.pdf" target="_blank" class="btn-primary"
+          style="background: var(--white); color: var(--bg); box-shadow: 0 0 20px rgba(255,255,255,0.2);">Download
+          CV</a>
+        <a href="https://github.com/Tarakreddy011" target="_blank" class="btn-outline">GitHub</a>
+        <a href="#contact" class="btn-cv">Contact Me</a>
       </div>
       <div class="hero-stats">
         <div class="stat-item">
@@ -1520,7 +1637,7 @@
       <div class="orb orb-1"></div>
       <div class="orb orb-2"></div>
       <div class="section-header reveal">
-        <div class="section-number">01 // About</div>
+        <div class="section-number">01 About</div>
         <h2 class="section-title">Who I Am</h2>
         <div class="section-line"></div>
       </div>
@@ -1555,7 +1672,8 @@
             </div>
           </div>
           <div style="margin-top: 32px;">
-            <a href="Tarakreddycv.pdf" target="_blank" class="btn-primary" style="box-shadow: 0 0 15px var(--orange-glow);">Download My CV</a>
+            <a href="Tarakreddycv.pdf" target="_blank" class="btn-primary"
+              style="box-shadow: 0 0 15px var(--orange-glow);">Download My CV</a>
           </div>
         </div>
         <div class="about-photos reveal reveal-d2">
@@ -1573,7 +1691,7 @@
   <section id="education">
     <div class="section-inner">
       <div class="section-header reveal">
-        <div class="section-number">02 // Education Journey</div>
+        <div class="section-number">02 Education Journey</div>
         <h2 class="section-title">My Academic Path</h2>
         <div class="section-line"></div>
       </div>
@@ -1620,7 +1738,7 @@
   <section id="skills">
     <div class="section-inner">
       <div class="section-header reveal">
-        <div class="section-number">03 // Skills</div>
+        <div class="section-number">03 Skills</div>
         <h2 class="section-title">Tech Stack</h2>
         <div class="section-line"></div>
       </div>
@@ -1685,7 +1803,7 @@
   <section id="projects">
     <div class="section-inner" style="padding-bottom:20px;">
       <div class="section-header reveal">
-        <div class="section-number">04 // Projects</div>
+        <div class="section-number">04 Projects</div>
         <h2 class="section-title">What I Built</h2>
         <div class="section-line"></div>
       </div>
@@ -1916,7 +2034,7 @@
     <div class="section-inner">
       <div class="orb orb-1"></div>
       <div class="section-header reveal">
-        <div class="section-number">05 // Volunteering</div>
+        <div class="section-number">05 Volunteering</div>
         <h2 class="section-title">NGO Work</h2>
         <div class="section-line"></div>
       </div>
@@ -1956,7 +2074,7 @@
   <section id="certifications">
     <div class="section-inner">
       <div class="section-header reveal">
-        <div class="section-number">06 // Certifications</div>
+        <div class="section-number">06 Certifications</div>
         <h2 class="section-title">Credentials</h2>
         <div class="section-line"></div>
       </div>
@@ -2037,7 +2155,7 @@
     <div class="section-inner">
       <div class="orb orb-2"></div>
       <div class="section-header reveal">
-        <div class="section-number">07 // Contact</div>
+        <div class="section-number">07 Contact</div>
         <h2 class="section-title">Get In Touch</h2>
         <div class="section-line"></div>
       </div>
@@ -2055,7 +2173,8 @@
           </div>
         </div>
         <a href="mailto:singamreddytarakeswarreddy@gmail.com" class="btn-primary">Send an Email</a>
-        <a href="Tarakreddycv.pdf" target="_blank" class="btn-primary" style="margin-left: 12px; background: var(--white); color: var(--bg);">Download CV</a>
+        <a href="Tarakreddycv.pdf" target="_blank" class="btn-primary"
+          style="margin-left: 12px; background: var(--white); color: var(--bg);">Download CV</a>
       </div>
 
       <!-- Social Links -->
@@ -2150,6 +2269,19 @@
       navAs.forEach(a => {
         const active = a.getAttribute('href') === '#' + cur;
         a.classList.toggle('active', active);
+      });
+    });
+
+    // MOBILE MENU
+    function toggleMobileMenu() {
+      document.getElementById('navMenu').classList.toggle('open');
+      document.getElementById('menuBtn').classList.toggle('open');
+    }
+
+    document.querySelectorAll('.nav-links a, .nav-actions a, .nav-actions button').forEach(el => {
+      el.addEventListener('click', () => {
+        document.getElementById('navMenu').classList.remove('open');
+        document.getElementById('menuBtn').classList.remove('open');
       });
     });
   </script>
